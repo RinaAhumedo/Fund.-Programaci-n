@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Pago</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <div class="container py-4">
+    <div class="row d-flex justify-content-center">
+      <div class="col-lg-9 col-md-11">
+        <div id="app1" class="card shadow-lg border-0 rounded-3">
+          <div class="card-body p-4">
+            
+            <!-- Título -->
+            <h2 class="text-center titulo">💰 EL PAGADOR</h2>
+            <p class="text-center subtitulo">Calcula tu salario neto fácilmente</p>
+
+            <!-- Datos de trabajo -->
+            <h5 class="seccion mt-3">📌 Datos de Trabajo</h5>
+            <div class="row g-3">
+              <div class="col-md">
+                <div class="form-floating">
+                  <input v-model.number="nhoras" type="number" class="form-control" id="horas">
+                  <label for="horas">Horas Trabajadas</label>
+                </div>
+              </div>
+              <div class="col-md">
+                <div class="form-floating">
+                  <input v-model.number="vhora" type="number" class="form-control" id="valorHora">
+                  <label for="valorHora">Valor por Hora</label>
+                </div>
+              </div>
+              <div class="col-md">
+                <div class="form-floating">
+                  <input :value="formatoPesos(salarioBasico)" type="text" class="form-control" readonly>
+                  <label>Salario Básico</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deducciones -->
+            <h5 class="seccion mt-4">🔻 Deducciones (%)</h5>
+            <div class="row g-3">
+              <div class="col-md">
+                <div class="form-floating">
+                  <input v-model.number="salud" type="number" class="form-control">
+                  <label>Salud %</label>
+                </div>
+              </div>
+              <div class="col-md">
+                <div class="form-floating">
+                  <input v-model.number="pension" type="number" class="form-control">
+                  <label>Pensión %</label>
+                </div>
+              </div>
+              <div class="col-md">
+                <div class="form-floating">
+                  <input v-model.number="icbf" type="number" class="form-control">
+                  <label>ICBF %</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Valores descontados -->
+            <div class="row g-3 mt-2">
+              <div class="col-md">
+                <div class="form-floating">
+                  <input :value="formatoPesos(dedu_salud)" type="text" class="form-control" readonly>
+                  <label>$ Salud</label>
+                </div>
+              </div>
+              <div class="col-md">
+                <div class="form-floating">
+                  <input :value="formatoPesos(dedu_pension)" type="text" class="form-control" readonly>
+                  <label>$ Pensión</label>
+                </div>
+              </div>
+              <div class="col-md">
+                <div class="form-floating">
+                  <input :value="formatoPesos(dedu_icbf)" type="text" class="form-control" readonly>
+                  <label>$ ICBF</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Aportes -->
+            <h5 class="seccion mt-4">🔺 Aportes y Otros</h5>
+            <div class="row g-3 align-items-center">
+              <div class="col-md-4">
+                <div class="input-group">
+                  <input v-model.number="prima" type="number" class="form-control">
+                  <select v-model="tipoPrima" class="form-select">
+                    <option value="%">%</option>
+                    <option value="$">$</option>
+                  </select>
+                </div>
+                <small class="text-muted">Prima</small>
+              </div>
+
+              <div class="col-md-4">
+                <div class="input-group">
+                  <input v-model.number="bonificacion" type="number" class="form-control">
+                  <select v-model="tipoBonificacion" class="form-select">
+                    <option value="%">%</option>
+                    <option value="$">$</option>
+                  </select>
+                </div>
+                <small class="text-muted">Bonificación</small>
+              </div>
+
+              <div class="col-md-4">
+                <div class="input-group">
+                  <input v-model.number="prestamo" type="number" class="form-control">
+                  <select v-model="tipoPrestamo" class="form-select">
+                    <option value="%">%</option>
+                    <option value="$">$</option>
+                  </select>
+                </div>
+                <small class="text-muted">Préstamo</small>
+              </div>
+            </div>
+
+            <!-- Totales -->
+            <h5 class="seccion mt-4">📊 Resultados</h5>
+            <div class="row g-3">
+              <div class="col-md">
+                <div class="form-floating">
+                  <input :value="formatoPesos(totalDeducciones)" type="text" class="form-control text-danger fw-bold" readonly>
+                  <label>Total Deducciones</label>
+                </div>
+              </div>
+              <div class="col-md">
+                <div class="form-floating">
+                  <input :value="formatoPesos(totalAportes)" type="text" class="form-control text-success fw-bold" readonly>
+                  <label>Total Aportes</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total a pagar -->
+            <div class="resultado-final text-center mt-4 p-3 rounded">
+              <h3>Total a Pagar:</h3>
+              <h2 class="fw-bold">{{ formatoPesos(totalPagar) }} 💵</h2>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="codigo.js"></script>
+</body>
+</html>
